@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://stock-photos.pages.dev/sitemap.xml

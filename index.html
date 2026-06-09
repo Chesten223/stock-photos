@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Stock Photos — Random Image Gallery</title>
+<meta name="description" content="Browse and download free high-quality stock photos. Random images from Lorem Picsum with grayscale, blur filters, and multiple sizes.">
+<meta property="og:title" content="Free Stock Photos — Random Image Gallery">
+<meta property="og:description" content="Browse and download free high-quality stock photos powered by Lorem Picsum.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://stock-photos.pages.dev/">
+<meta property="og:image" content="https://picsum.photos/1200/630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Free Stock Photos — Random Image Gallery">
+<meta name="twitter:description" content="Browse and download free high-quality stock photos powered by Lorem Picsum.">
+<link rel="canonical" href="https://stock-photos.pages.dev/">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"WebApplication",
+  "name":"Free Stock Photos — Random Image Gallery",
+  "url":"https://stock-photos.pages.dev/",
+  "description":"Browse and download free high-quality stock photos powered by Lorem Picsum.",
+  "applicationCategory":"MultimediaApplication",
+  "operatingSystem":"All",
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"FAQPage",
+  "mainEntity":[
+    {"@type":"Question","name":"Are these photos free to use?","acceptedAnswer":{"@type":"Answer","text":"Yes. All images come from Lorem Picsum and are free for personal and commercial use."}},
+    {"@type":"Question","name":"Do I need an API key?","acceptedAnswer":{"@type":"Answer","text":"No. The Lorem Picsum API is completely free and requires no API key or authentication."}},
+    {"@type":"Question","name":"Can I filter images?","acceptedAnswer":{"@type":"Answer","text":"Yes. You can filter by grayscale, blur intensity, and custom dimensions directly from the gallery."}}
+  ]
+}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#c9d1d9;--text2:#8b949e;--accent:#58a6ff;--accent2:#1f6feb;--green:#3fb950;--radius:8px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Oxygen,Ubuntu,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+header{border-bottom:1px solid var(--border);padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+header h1{font-size:1.5rem;font-weight:700}
+header h1 span{color:var(--accent)}
+header p{color:var(--text2);font-size:.9rem}
+nav{display:flex;gap:.75rem;flex-wrap:wrap}
+nav a{color:var(--text2);font-size:.85rem;padding:.35rem .7rem;border:1px solid var(--border);border-radius:var(--radius)}
+nav a:hover{color:var(--text);border-color:var(--accent)}
+
+.container{max-width:1280px;margin:0 auto;padding:0 1.5rem}
+
+/* Filters */
+.filters{padding:1.5rem 0;display:flex;flex-wrap:wrap;gap:.75rem;align-items:center}
+.filters input,.filters select{background:var(--card);border:1px solid var(--border);color:var(--text);padding:.5rem .75rem;border-radius:var(--radius);font-size:.85rem}
+.filters input:focus,.filters select:focus{outline:none;border-color:var(--accent)}
+.filters input[type=text]{min-width:200px}
+.filters label{font-size:.85rem;color:var(--text2);display:flex;align-items:center;gap:.4rem}
+.filters label input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent)}
+.btn{padding:.5rem 1rem;border:none;border-radius:var(--radius);font-size:.85rem;cursor:pointer;font-weight:500}
+.btn-primary{background:var(--accent2);color:#fff}
+.btn-primary:hover{background:var(--accent)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-green{background:var(--green);color:#000}
+
+/* Grid */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.25rem;padding:1rem 0 2rem}
+.photo-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.photo-card:hover{border-color:var(--accent)}
+.photo-card img{width:100%;aspect-ratio:16/11;object-fit:cover;display:block;cursor:pointer;transition:opacity .2s}
+.photo-card img:hover{opacity:.85}
+.photo-info{padding:.75rem 1rem}
+.photo-info .author{font-weight:600;font-size:.9rem}
+.photo-info .dims{color:var(--text2);font-size:.8rem}
+.photo-actions{display:flex;gap:.5rem;padding:0 1rem .75rem;flex-wrap:wrap}
+.photo-actions .btn{font-size:.75rem;padding:.3rem .6rem}
+
+/* Load more */
+.load-more-wrap{text-align:center;padding:1rem 0 3rem}
+
+/* Lightbox */
+.lightbox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:2rem}
+.lightbox.active{display:flex}
+.lightbox-inner{position:relative;max-width:95vw;max-height:90vh;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.lightbox-inner img{max-width:100%;max-height:75vh;border-radius:var(--radius);object-fit:contain}
+.lightbox-close{position:absolute;top:-1rem;right:0;color:#fff;font-size:2rem;cursor:pointer;background:none;border:none}
+.lightbox-actions{display:flex;gap:.75rem;flex-wrap:wrap;justify-content:center}
+
+/* Features */
+.features{padding:3rem 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem}
+.feature-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.feature-card h3{color:var(--accent);margin-bottom:.5rem;font-size:1.1rem}
+.feature-card p{color:var(--text2);font-size:.9rem}
+
+/* FAQ */
+.faq{padding:2rem 0 3rem}
+.faq h2{font-size:1.4rem;margin-bottom:1.25rem}
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:.75rem;overflow:hidden}
+.faq-q{padding:1rem;cursor:pointer;font-weight:600;display:flex;justify-content:space-between;align-items:center;background:var(--card)}
+.faq-q::after{content:'+';color:var(--accent);font-size:1.2rem}
+.faq-item.open .faq-q::after{content:'−'}
+.faq-a{padding:0 1rem;max-height:0;overflow:hidden;color:var(--text2);font-size:.9rem;transition:padding .3s,max-height .3s}
+.faq-item.open .faq-a{padding:0 1rem 1rem;max-height:200px}
+
+/* Email widget */
+.email-widget{padding:2rem 0 3rem;text-align:center}
+.email-widget h2{font-size:1.3rem;margin-bottom:.5rem}
+.email-widget p{color:var(--text2);margin-bottom:1rem;font-size:.9rem}
+.email-form{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap}
+.email-form input[type=email]{min-width:280px;background:var(--card);border:1px solid var(--border);color:var(--text);padding:.6rem 1rem;border-radius:var(--radius);font-size:.9rem}
+.email-form input:focus{outline:none;border-color:var(--accent)}
+
+/* Cross links */
+.cross-links{padding:2rem 0;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:1.5rem;justify-content:center}
+.cross-links a{color:var(--text2);font-size:.85rem;padding:.4rem .8rem;border:1px solid var(--border);border-radius:var(--radius)}
+.cross-links a:hover{color:var(--accent);border-color:var(--accent)}
+
+footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--text2);font-size:.8rem}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#000;padding:.6rem 1.2rem;border-radius:var(--radius);font-size:.85rem;font-weight:600;opacity:0;transition:opacity .3s;pointer-events:none;z-index:2000}
+.toast.show{opacity:1}
+
+/* Responsive */
+@media(max-width:640px){header{flex-direction:column;align-items:flex-start}.filters input[type=text]{min-width:100%}.gallery{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>📷 <span>Free Stock Photos</span></h1>
+    <p>Beautiful free images powered by Lorem Picsum</p>
+  </div>
+  <nav>
+    <a href="#gallery">Gallery</a>
+    <a href="#features">Features</a>
+    <a href="#faq">FAQ</a>
+    <a href="#newsletter">Newsletter</a>
+  </nav>
+</header>
+
+<div class="container">
+  <!-- Filters -->
+  <section class="filters" id="gallery">
+    <input type="text" id="searchInput" placeholder="Search by author name…" aria-label="Search by author name">
+    <label><input type="checkbox" id="grayscaleCheck"> Grayscale</label>
+    <label>Blur: <select id="blurSelect"><option value="">None</option><option value="1">Low</option><option value="3">Medium</option><option value="6">High</option><option value="10">Max</option></select></label>
+    <label>Width: <input type="number" id="widthInput" placeholder="800" style="width:80px"></label>
+    <label>Height: <input type="number" id="heightInput" placeholder="600" style="width:80px"></label>
+    <button class="btn btn-primary" id="applyFilters">Apply</button>
+  </section>
+
+  <!-- Gallery -->
+  <div class="gallery" id="galleryGrid"></div>
+
+  <!-- Load more -->
+  <div class="load-more-wrap">
+    <button class="btn btn-outline" id="loadMoreBtn">Load More Photos</button>
+  </div>
+
+  <!-- Features -->
+  <section class="features" id="features">
+    <div class="feature-card">
+      <h3>🔒 No API Key Required</h3>
+      <p>All images are fetched directly from the Lorem Picsum API — completely free, no signup or authentication needed.</p>
+    </div>
+    <div class="feature-card">
+      <h3>🎨 Live Filters</h3>
+      <p>Apply grayscale, blur, and custom dimensions in real time. See exactly what you get before downloading.</p>
+    </div>
+    <div class="feature-card">
+      <h3>📋 One-Click Copy</h3>
+      <p>Copy the direct image URL or ready-to-use Markdown syntax to your clipboard instantly.</p>
+    </div>
+    <div class="feature-card">
+      <h3>⚡ Fast & Lightweight</h3>
+      <p>Zero dependencies. A single HTML file that loads fast and works everywhere — desktop, tablet, and mobile.</p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq" id="faq">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item">
+      <div class="faq-q">Are these photos free to use?</div>
+      <div class="faq-a">Yes. All images come from Lorem Picsum and are free for personal and commercial use. No attribution required.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Do I need an API key?</div>
+      <div class="faq-a">No. The Lorem Picsum API is completely free and requires no API key or authentication. Just start browsing.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">Can I filter or resize images?</div>
+      <div class="faq-a">Absolutely. Use the filter bar to apply grayscale, blur, and custom width/height. The gallery updates instantly.</div>
+    </div>
+  </section>
+
+  <!-- Email Widget -->
+  <section class="email-widget" id="newsletter">
+    <h2>Get New Photos in Your Inbox</h2>
+    <p>Subscribe to receive curated collections of free stock photos every week.</p>
+    <form class="email-form" onsubmit="event.preventDefault();showToast('Subscribed successfully!');this.reset();">
+      <input type="email" placeholder="you@example.com" required aria-label="Email address">
+      <button type="submit" class="btn btn-green">Subscribe</button>
+    </form>
+  </section>
+
+  <!-- Cross Links -->
+  <div class="cross-links">
+    <a href="https://picsum.photos" target="_blank" rel="noopener">Lorem Picsum</a>
+    <a href="https://unsplash.com" target="_blank" rel="noopener">Unsplash</a>
+    <a href="https://pexels.com" target="_blank" rel="noopener">Pexels</a>
+    <a href="https://pixabay.com" target="_blank" rel="noopener">Pixabay</a>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 Free Stock Photos. Images via <a href="https://picsum.photos" target="_blank" rel="noopener">Lorem Picsum</a>.</p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Image preview">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <img id="lightboxImg" src="" alt="Full size photo">
+    <div class="lightbox-actions" id="lightboxActions"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const API='https://picsum.photos/v2/list';
+  let page=1,allPhotos=[],displayedPhotos=[];
+
+  const grid=document.getElementById('galleryGrid');
+  const loadMoreBtn=document.getElementById('loadMoreBtn');
+  const searchInput=document.getElementById('searchInput');
+  const grayscaleCheck=document.getElementById('grayscaleCheck');
+  const blurSelect=document.getElementById('blurSelect');
+  const widthInput=document.getElementById('widthInput');
+  const heightInput=document.getElementById('heightInput');
+  const applyBtn=document.getElementById('applyFilters');
+  const lightbox=document.getElementById('lightbox');
+  const lightboxImg=document.getElementById('lightboxImg');
+  const lightboxClose=document.getElementById('lightboxClose');
+  const lightboxActions=document.getElementById('lightboxActions');
+  const toast=document.getElementById('toast');
+
+  function showToast(msg){toast.textContent=msg;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),2000)}
+
+  function buildImgUrl(id,w,h,gray,blur){
+    let u=`https://picsum.photos/id/${id}/${w||800}/${h||600}`;
+    const params=[];
+    if(gray)params.push('grayscale');
+    if(blur)params.push('blur='+blur);
+    if(params.length)u+='?'+params.join('&');
+    return u;
+  }
+
+  function renderCards(photos){
+    const gray=grayscaleCheck.checked;
+    const blur=blurSelect.value;
+    const w=widthInput.value;
+    const h=heightInput.value;
+    grid.innerHTML='';
+    photos.forEach(p=>{
+      const card=document.createElement('div');
+      card.className='photo-card';
+      const imgUrl=buildImgUrl(p.id,w,h,gray,blur);
+      card.innerHTML=`
+        <img src="${imgUrl}" alt="Photo by ${p.author}" loading="lazy">
+        <div class="photo-info">
+          <div class="author">${p.author}</div>
+          <div class="dims">${p.width} × ${p.height}</div>
+        </div>
+        <div class="photo-actions">
+          <button class="btn btn-primary" data-action="view">View</button>
+          <button class="btn btn-outline" data-action="download">Download</button>
+          <button class="btn btn-outline" data-action="copyUrl">Copy URL</button>
+          <button class="btn btn-outline" data-action="copyMd">Copy MD</button>
+        </div>`;
+      // Events
+      card.querySelector('img').addEventListener('click',()=>openLightbox(p));
+      card.querySelector('[data-action=view]').addEventListener('click',()=>openLightbox(p));
+      card.querySelector('[data-action=download]').addEventListener('click',()=>{const a=document.createElement('a');a.href=buildImgUrl(p.id,p.width,p.height,false,false);a.download='picsum-'+p.id+'.jpg';a.target='_blank';a.click()});
+      card.querySelector('[data-action=copyUrl]').addEventListener('click',()=>{navigator.clipboard.writeText(buildImgUrl(p.id,p.width,p.height,gray,blur));showToast('URL copied!')});
+      card.querySelector('[data-action=copyMd]').addEventListener('click',()=>{const md=`![${p.author}](${buildImgUrl(p.id,w||800,h||600,gray,blur)})`;navigator.clipboard.writeText(md);showToast('Markdown copied!')});
+      grid.appendChild(card);
+    });
+  }
+
+  function openLightbox(p){
+    const gray=grayscaleCheck.checked;
+    const blur=blurSelect.value;
+    const w=widthInput.value;
+    const h=heightInput.value;
+    lightboxImg.src=buildImgUrl(p.id,w||p.width,h||p.height,gray,blur);
+    lightboxImg.alt='Photo by '+p.author;
+    lightboxActions.innerHTML='';
+    const dl=document.createElement('button');dl.className='btn btn-primary';dl.textContent='Download Full Size';
+    dl.onclick=()=>{const a=document.createElement('a');a.href=buildImgUrl(p.id,p.width,p.height,false,false);a.download='picsum-'+p.id+'.jpg';a.target='_blank';a.click()};
+    const cu=document.createElement('button');cu.className='btn btn-outline';cu.textContent='Copy URL';
+    cu.onclick=()=>{navigator.clipboard.writeText(buildImgUrl(p.id,w||p.width,h||p.height,gray,blur));showToast('URL copied!')};
+    const cm=document.createElement('button');cm.className='btn btn-outline';cm.textContent='Copy Markdown';
+    cm.onclick=()=>{const md=`![${p.author}](${buildImgUrl(p.id,w||800,h||600,gray,blur)})`;navigator.clipboard.writeText(md);showToast('Markdown copied!')};
+    lightboxActions.append(dl,cu,cm);
+    lightbox.classList.add('active');
+    document.body.style.overflow='hidden';
+  }
+
+  function closeLightbox(){lightbox.classList.remove('active');document.body.style.overflow=''}
+  lightboxClose.addEventListener('click',closeLightbox);
+  lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeLightbox()});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLightbox()});
+
+  function applySearch(){
+    const q=searchInput.value.trim().toLowerCase();
+    displayedPhotos=q?allPhotos.filter(p=>p.author.toLowerCase().includes(q)):[...allPhotos];
+    renderCards(displayedPhotos);
+  }
+
+  async function loadPhotos(){
+    loadMoreBtn.disabled=true;loadMoreBtn.textContent='Loading…';
+    try{
+      const res=await fetch(`${API}?page=${page}&limit=30`);
+      const data=await res.json();
+      if(data.length===0){loadMoreBtn.textContent='No more photos';return}
+      allPhotos=allPhotos.concat(data);
+      page++;
+      applySearch();
+      loadMoreBtn.textContent='Load More Photos';
+    }catch(e){loadMoreBtn.textContent='Error — Retry';console.error(e)}
+    loadMoreBtn.disabled=false;
+  }
+
+  loadMoreBtn.addEventListener('click',loadPhotos);
+  applyBtn.addEventListener('click',applySearch);
+  searchInput.addEventListener('keyup',e=>{if(e.key==='Enter')applySearch()});
+
+  // FAQ toggle
+  document.querySelectorAll('.faq-q').forEach(q=>q.addEventListener('click',()=>q.parentElement.classList.toggle('open')));
+
+  loadPhotos();
+})();
+</script>
+</body>
+</html>
